@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SES | Professional Notification Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--info));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 0 20px var(--primary-glow);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px var(--primary-glow); }
+            50% { box-shadow: 0 0 25px var(--primary-glow); }
+            100% { box-shadow: 0 0 10px var(--primary-glow); }
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .status-badge {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            padding: 0.5rem 1rem;
+            border-radius: 99px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            padding: 2rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            transform: translateX(-100%);
+            transition: 0.5s;
+        }
+
+        .stat-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-icon {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            opacity: 0.5;
+        }
+
+        .completed .stat-value { color: var(--success); }
+        .failed .stat-value { color: var(--error); }
+        .waiting .stat-value { color: var(--warning); }
+        .active .stat-value { color: var(--info); }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--primary-glow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .refresh-notice {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h2 { font-size: 2rem; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo-icon">S</div>
+                <h1>SES <span style="font-weight: 300; opacity: 0.6;">Manager</span></h1>
+            </div>
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                Service Operational
+            </div>
+        </header>
+
+        <section class="hero">
+            <h2>Notification Orchestrator</h2>
+            <p>High-performance notification delivery system powered by Redis and BullMQ. Monitor and mange your communication pipelines in real-time.</p>
+        </section>
+
+        <div class="stats-grid">
+            <div class="stat-card completed">
+                <div class="stat-icon">✓</div>
+                <div class="stat-label">Delivered</div>
+                <div id="stat-completed" class="stat-value">0</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Successfully sent</div>
+            </div>
+            <div class="stat-card failed">
+                <div class="stat-icon">!</div>
+                <div class="stat-label">Failed</div>
+                <div id="stat-failed" class="stat-value">0</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Delivery errors</div>
+            </div>
+            <div class="stat-card active">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-label">Processing</div>
+                <div id="stat-active" class="stat-value">0</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">In-flight now</div>
+            </div>
+            <div class="stat-card waiting">
+                <div class="stat-icon">⏲</div>
+                <div class="stat-label">Queued</div>
+                <div id="stat-waiting" class="stat-value">0</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Pending delivery</div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a href="/admin/queues" class="btn btn-primary">
+                Open Queue Explorer
+                <span>→</span>
+            </a>
+            <button onclick="fetchStats()" class="btn btn-outline">
+                Refresh Data
+            </button>
+        </div>
+
+        <p class="refresh-notice">Auto-refreshing every 10 seconds</p>
+    </div>
+
+    <script>
+        async function fetchStats() {
+            try {
+                const response = await fetch('/api/stats');
+                const data = await response.json();
+                if (data.success) {
+                    animateValue("stat-completed", data.counts.completed);
+                    animateValue("stat-failed", data.counts.failed);
+                    animateValue("stat-active", data.counts.active);
+                    animateValue("stat-waiting", data.counts.waiting);
+                }
+            } catch (error) {
+                console.error('Failed to fetch stats:', error);
+            }
+        }
+
+        function animateValue(id, endValue) {
+            const obj = document.getElementById(id);
+            const startValue = parseInt(obj.innerText) || 0;
+            if (startValue === endValue) return;
+            
+            let duration = 500;
+            let start = null;
+            
+            window.requestAnimationFrame(function step(timestamp) {
+                if (!start) start = timestamp;
+                let progress = Math.min((timestamp - start) / duration, 1);
+                obj.innerText = Math.floor(progress * (endValue - startValue) + startValue);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            });
+        }
+
+        // Initial fetch
+        fetchStats();
+        // Poll every 10 seconds
+        setInterval(fetchStats, 10000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "rewrites": [
+    {
+      "source": "/api/stats",
+      "destination": "/api/index.ts"
+    },
+    {
+      "source": "/v1/:path*",
+      "destination": "/api/index.ts"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/api/index.ts"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
