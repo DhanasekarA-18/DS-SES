@@ -4,12 +4,31 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+// Use explicit configuration for better reliability on cloud platforms like Render
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465, // Using 465 for SSL/TLS
+  secure: true,
+  pool: true, // Use pooling for background worker efficiency
+  maxConnections: 5,
+  maxMessages: 100,
   auth: {
-    user: process.env.MAIL_FROM, // Using MAIL_FROM as the username
-    pass: process.env.MAIL_PASS, // Using MAIL_PASS as the app password
+    user: process.env.MAIL_FROM,
+    pass: process.env.MAIL_PASS,
   },
+  // Add timeout settings to catch issues early
+  connectionTimeout: 15000, // 15s - slightly more generous for cloud
+  greetingTimeout: 15000,
+  socketTimeout: 30000, // 30s
+});
+
+// Added a quick verify to help debugging on startup
+transporter.verify((error, success) => {
+  if (error) {
+    logger.error('SMTP Connection Validation Error:', error);
+  } else {
+    logger.info('SMTP Server is ready to take our messages');
+  }
 });
 
 export const sendEmailProvider = async (to: string, template: string, data: any) => {

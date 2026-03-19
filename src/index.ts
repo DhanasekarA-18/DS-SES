@@ -14,6 +14,14 @@ import { notificationWorker } from './workers/notificationWorker';
 // Load environment variables
 dotenv.config();
 
+// Validate required environment variables
+const requiredEnv = ['MAIL_FROM', 'MAIL_PASS', 'REDIS_URL'];
+requiredEnv.forEach((env) => {
+  if (!process.env[env]) {
+    logger.error(`❌ Missing required environment variable: ${env}`);
+  }
+});
+
 /**
  * App Configuration & Initialization
  */
